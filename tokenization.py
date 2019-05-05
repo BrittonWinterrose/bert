@@ -80,20 +80,15 @@ def convert_to_unicode(text):
   if six.PY3:
     if isinstance(text, str):
       return text
-    elif isinstance(text, float):
-      return r'filler'
-    elif isinstance(text, bytes):
+    else: # isinstance(text, bytes):
       try:
-        text = text.decode("utf-8", "ignore")
-        return text
+        return text.decode("utf-8", "ignore")
       except:
-        text = text.decode("utf-16", "ignore")
-        return text
-      finally:
+        return text.decode("utf-16", "ignore")
+      except:
         return u"error"
-#         raise ValueError("Unsupported string type: %s" % (type(text)))
-    else:
-      raise ValueError("Unsupported string type: %s" % (type(text)), "Text:", text)
+#     else:
+#       raise ValueError("Unsupported string type: %s" % (type(text)), "Text:", text)
   elif six.PY2:
     if isinstance(text, str):
       return text.decode("utf-8", "ignore")
