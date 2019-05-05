@@ -75,48 +75,47 @@ def validate_case_matches_checkpoint(do_lower_case, init_checkpoint):
                                           model_name, case_name, opposite_flag))
 
 
-# def convert_to_unicode(text):
-#   """Converts `text` to Unicode (if it's not already), assuming utf-8 input."""
-#   if six.PY3:
-#     text = re.sub('[0-9]+', '', text) # remove numbers
-#     if isinstance(text, str):
-#       return text
-#     elif isinstance(text, bytes):
-#       return text.decode("utf-8", "ignore")
-#     else:
-#       raise ValueError("Unsupported string type: %s" % (type(text)))
-#   elif six.PY2:
-#     if isinstance(text, str):
-#       return text.decode("utf-8", "ignore")
-#     elif isinstance(text, unicode):
-#       return text
-#     else:
-#       raise ValueError("Unsupported string type: %s" % (type(text)))
-#   else:
-#     raise ValueError("Not running on Python2 or Python 3?")
+def convert_to_unicode(text):
+  """Converts `text` to Unicode (if it's not already), assuming utf-8 input."""
+  if six.PY3:
+    if isinstance(text, str):
+      return text
+    elif isinstance(text, bytes):
+      return text.decode("utf-8", "ignore")
+    else:
+      raise ValueError("Unsupported string type: %s" % (type(text)))
+  elif six.PY2:
+    if isinstance(text, str):
+      return text.decode("utf-8", "ignore")
+    elif isinstance(text, unicode):
+      return text
+    else:
+      raise ValueError("Unsupported string type: %s" % (type(text)))
+  else:
+    raise ValueError("Not running on Python2 or Python 3?")
 
 
-# def printable_text(text):
-#   """Returns text encoded in a way suitable for print or `tf.logging`."""
+def printable_text(text):
+  """Returns text encoded in a way suitable for print or `tf.logging`."""
 
-#   # These functions want `str` for both Python2 and Python3, but in one case
-#   # it's a Unicode string and in the other it's a byte string.
-#   if six.PY3:
-#     if isinstance(text, str):
-#       return text
-#     elif isinstance(text, bytes):
-#       return text.decode("utf-8", "ignore")
-#     else:
-#       raise ValueError("Unsupported string type: %s" % (type(text)))
-#   elif six.PY2:
-#     if isinstance(text, str):
-#       return text
-#     elif isinstance(text, unicode):
-#       return text.encode("utf-8")
-#     else:
-#       raise ValueError("Unsupported string type: %s" % (type(text)))
-#   else:
-#     raise ValueError("Not running on Python2 or Python 3?")
+  # These functions want `str` for both Python2 and Python3, but in one case
+  # it's a Unicode string and in the other it's a byte string.
+  if six.PY3:
+    if isinstance(text, str):
+      return text
+    elif isinstance(text, bytes):
+      return text.decode("utf-8", "ignore")
+    else:
+      raise ValueError("Unsupported string type: %s" % (type(text)))
+  elif six.PY2:
+    if isinstance(text, str):
+      return text
+    elif isinstance(text, unicode):
+      return text.encode("utf-8")
+    else:
+      raise ValueError("Unsupported string type: %s" % (type(text)))
+  else:
+    raise ValueError("Not running on Python2 or Python 3?")
 
 
 def load_vocab(vocab_file):
@@ -125,7 +124,7 @@ def load_vocab(vocab_file):
   index = 0
   with tf.gfile.GFile(vocab_file, "r") as reader:
     while True:
-      token = reader.readline() #convert_to_unicode(reader.readline())
+      token = convert_to_unicode(reader.readline())
       if not token:
         break
       token = token.strip()
@@ -195,7 +194,7 @@ class BasicTokenizer(object):
 
   def tokenize(self, text):
     """Tokenizes a piece of text."""
-    #text = convert_to_unicode(text)
+    text = convert_to_unicode(text)
     text = self._clean_text(text)
 
     # This was added on November 1st, 2018 for the multilingual and Chinese
@@ -319,8 +318,7 @@ class WordpieceTokenizer(object):
       A list of wordpiece tokens.
     """
 
-    #text = convert_to_unicode(text)
-    text = text
+    text = convert_to_unicode(text)
 
     output_tokens = []
     for token in whitespace_tokenize(text):
