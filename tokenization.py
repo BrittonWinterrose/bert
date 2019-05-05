@@ -78,17 +78,13 @@ def validate_case_matches_checkpoint(do_lower_case, init_checkpoint):
 def convert_to_unicode(text):
   """Converts `text` to Unicode (if it's not already), assuming utf-8 input."""
   if six.PY3:
+    text = re.sub('[0-9]+', '', text) # remove numbers
     if isinstance(text, str):
       return text
-    else: # isinstance(text, bytes):
-      try:
-        return text.decode("utf-8", "ignore")
-      except:
-        return text.decode("utf-16", "ignore")
-      except:
-        return u"error"
-#     else:
-#       raise ValueError("Unsupported string type: %s" % (type(text)), "Text:", text)
+    elif isinstance(text, bytes):
+      return text.decode("utf-8", "ignore")
+    else:
+      raise ValueError("Unsupported string type: %s" % (type(text)))
   elif six.PY2:
     if isinstance(text, str):
       return text.decode("utf-8", "ignore")
@@ -110,8 +106,8 @@ def printable_text(text):
       return text
     elif isinstance(text, bytes):
       return text.decode("utf-8", "ignore")
-    #else:
-      #raise ValueError("Unsupported string type: %s" % (type(text)))
+    else:
+      raise ValueError("Unsupported string type: %s" % (type(text)))
   elif six.PY2:
     if isinstance(text, str):
       return text
@@ -192,7 +188,6 @@ class BasicTokenizer(object):
 
   def __init__(self, do_lower_case=True):
     """Constructs a BasicTokenizer.
-
     Args:
       do_lower_case: Whether to lower case the input.
     """
@@ -312,18 +307,14 @@ class WordpieceTokenizer(object):
 
   def tokenize(self, text):
     """Tokenizes a piece of text into its word pieces.
-
     This uses a greedy longest-match-first algorithm to perform tokenization
     using the given vocabulary.
-
     For example:
       input = "unaffable"
       output = ["un", "##aff", "##able"]
-
     Args:
       text: A single token or whitespace separated tokens. This should have
         already been passed through `BasicTokenizer.
-
     Returns:
       A list of wordpiece tokens.
     """
