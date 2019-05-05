@@ -83,7 +83,12 @@ def convert_to_unicode(text):
     elif isinstance(text, float):
       return r'filler'
     elif isinstance(text, bytes):
-      return text.decode("utf-8", "ignore")
+      try:
+        text = text.decode("utf-8", "ignore")
+      except:
+        return r'filler'
+      finally:
+        raise ValueError("Unsupported string type: %s" % (type(text)), "Text:", text)
     else:
       raise ValueError("Unsupported string type: %s" % (type(text)), "Text:", text)
   elif six.PY2:
@@ -107,8 +112,8 @@ def printable_text(text):
       return text
     elif isinstance(text, bytes):
       return text.decode("utf-8", "ignore")
-    else:
-      raise ValueError("Unsupported string type: %s" % (type(text)))
+    #else:
+      #raise ValueError("Unsupported string type: %s" % (type(text)))
   elif six.PY2:
     if isinstance(text, str):
       return text
